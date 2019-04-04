@@ -87,7 +87,7 @@ function summary(results, burn=0)
 end
 
 
-function runmod(niter::NI, burnin=0, chains=4, rdat::DataFrame) where {NI<:Integer}
+function runmod(rdat::DataFrame, niter::NI, burnin=0, chains=4) where {NI<:Integer}
   futureres, res = Dict(), Dict()
   sendto([i for i in procs()[1:chains]], dat=rdat)
   for i in procs()
