@@ -1,4 +1,7 @@
 name = "wellwisejl"
 uuid = "42732c24-567c-11e9-365b-5b3eda1e810d"
 authors = ["Alex Keil <alex.keil@gmail.com>"]
-version = "0.1.1"
+version = "0.1.2"
+
+[deps]
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
