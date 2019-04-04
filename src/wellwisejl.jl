@@ -1,11 +1,13 @@
 module wellwisejl
 
-export sendto, addmoreprocs, ccdat, rbern, expit, summarygibbs, runmod
+export sendto, addmoreprocs, ccdat, rbern, expit, summarygibbs, runmod, traceplot, densplot
 
 using Distributed
 using DataFrames
 import DataFrames: completecases
 using Statistics
+using Makie
+using KernelDensity, Interpolations
 
 
 
@@ -103,11 +105,11 @@ function summarygibbs(results::DataFrame)
  return res
 end
 
-function summarygibbs(results::Dict)
+function summarygibbs(results::Dict{Any,Any})
  sets, means, medians, pl, pu, stds, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[]
- nm = names(results)
- for i in 1:size(results, 2)
-   col = flat([vcat(r[2][:,1]) for r in results])
+ nm = names(results[1])
+ for i in 1:size(results[1], 2)
+   col = flat([vcat(r[2][:,i]) for r in results])
    means = vcat(means, mean(col))
    medians = vcat(medians, median(col))
    pl = vcat(pl, quantile(col, 0.025)[1])
@@ -120,6 +122,89 @@ function summarygibbs(results::Dict)
  return res
 end
 
+function traceplot(res::Dict{Any,Any}, pos::Integer)
+    Iteration = [i for i in 1:size(res[1], 1)]
+    cols = [:black, :blue, :red, :green, :yellow]
+    # make plot
+    parname = string(names(res[1])[pos])
+	scene = Scene()
+    for chain in res
+      lines!(scene, Iteration, chain[2][:,pos], 
+        color = cols[chain[1]],
+        axis = (
+           names = (axisnames = ("Iteration", parname),)
+           grid = (linewidth = (0, 0),),
+           )
+           )
+    end
+    return scene
+end
+
+
+function traceplot(res::Dict{Any,Any}, colnm::Symbol)
+    Iteration = [i for i in 1:size(res[1], 1)]
+    cols = [:black, :blue, :red, :green, :yellow]
+    # make plot
+    parname = string(colnm)
+	scene = Scene()
+    for chain in res
+      lines!(scene, Iteration, chain[2][colnm], 
+        color = cols[chain[1]],
+        axis = (
+           names = (axisnames = ("Iteration", parname),)
+           grid = (linewidth = (0, 0),),
+           )
+           )
+    end
+    return scene
+end
+
+
+function densplot(res::Dict{Any,Any}, pos::Integer)
+    Iteration = [i for i in 1:size(res[1], 1)]
+    cols = [:black, :blue, :red, :green, :yellow]
+    # make plot
+    parname = string(names(res[1])[pos])
+	scene = Scene()
+    for chain in res
+      vals = chain[2][:,pos]
+      rng = (minimum(vals), maximum(vals))
+      x = range(rng[1], stop=rng[2], length=101)
+      kdens = kde(vals)
+      dens = pdf(kdens, x)
+      lines!(scene, x, dens, 
+        color = cols[chain[1]],
+        axis = (
+           names = (axisnames = (parname, "Density"),),
+           grid = (linewidth = (0, 0),),
+           )
+           )
+    end
+    return scene
+end
+
+function densplot(res::Dict{Any,Any}, colnm::Symbol)
+    Iteration = [i for i in 1:size(res[1], 1)]
+    cols = [:black, :blue, :red, :green, :yellow]
+    # make plot
+    parname = string(colnm)
+	scene = Scene()
+    for chain in res
+      vals = chain[2][colnm]
+      rng = (minimum(vals), maximum(vals))
+      x = range(rng[1], stop=rng[2], length=101)
+      kdens = kde(vals)
+      dens = pdf(kdens, x)
+      lines!(scene, x, dens, 
+        color = cols[chain[1]],
+        axis = (
+           names = (axisnames = (parname, "Density"),),
+           grid = (linewidth = (0, 0),),
+           )
+           )
+    end
+    return scene
+end
 
 
 end # module
