@@ -64,28 +64,13 @@ function expit(mu::Array{Float64,1})
   x::Array{Float64,1}  = 1. ./ (1. .+ exp.( .- mu))
 end
       
-
 function expit(mu::Array{Union{Missing, Float64},1})
   x::Array{Float64,1}  = 1. ./ (1. .+ exp.( .- mu))
 end 
 
-function summary(results, burn=0)
- sets, means, medians, pl, pu, stds, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[]
- s = 1
- for set in results
-   cset = [c for c in eachcol(set)]
-   sets = vcat(sets, map(mean, [s for c in eachcol(set)]))
-   means = vcat(means, map(mean, cset))
-   medians = vcat(medians, map(median, cset))
-   pl = vcat(pl, map(quantile, cset, 0.025))
-   pu = vcat(pl, map(quantile, cset,  0.975))
-   stds = vcat(stds, map(std, cset))
-   lens = vcat(lens, map(x -> size(x)[1], cset))
-   s = s+1
- end
- return hcat(sets, means, stds, medians, pl, pu, lens)
+function flat(arr::Array)
+   mapreduce(x -> isa(x, Array) ? flat(x) : x, append!, arr,init=[])
 end
-
 
 function runmod(rdat::DataFrame, niter::NI, burnin=0, chains=4) where {NI<:Integer}
   futureres, res = Dict(), Dict()
@@ -99,5 +84,41 @@ function runmod(rdat::DataFrame, niter::NI, burnin=0, chains=4) where {NI<:Integ
   end
   return res
 end
+
+function summarygibbs(results::DataFrame)
+ sets, means, medians, pl, pu, stds, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[]
+ nm = names(results)
+ for i in 1:size(results, 2)
+   col = results[:,i]
+   means = vcat(means, mean(col))
+   medians = vcat(medians, median(col))
+   pl = vcat(pl, quantile(col, 0.025)[1])
+   pu = vcat(pu, quantile(col,  0.975)[1])
+   stds = vcat(stds, std(col))
+   lens = vcat(lens, length(col))
+ end
+ res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, lens))
+ names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :length])
+ return res
+end
+
+function summarygibbs(results::Dict{Any,Any})
+ sets, means, medians, pl, pu, stds, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[]
+ nm = names(results)
+ for i in 1:size(results, 2)
+   col = flat([vcat(r[2][:,1]) for r in results])
+   means = vcat(means, mean(col))
+   medians = vcat(medians, median(col))
+   pl = vcat(pl, quantile(col, 0.025)[1])
+   pu = vcat(pu, quantile(col,  0.975)[1])
+   stds = vcat(stds, std(col))
+   lens = vcat(lens, length(col))
+ end
+ res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, lens))
+ names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :length])
+ return res
+end
+
+
 
 end # module
