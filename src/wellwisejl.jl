@@ -1,5 +1,7 @@
 module wellwisejl
 
+export sendto, addmoreprocs, ccdat, rbern, expit, summary, runmod
+
 using Pkg, Distributed, LinearAlgebra, Statistics, Distributions,
        DelimitedFiles, RData, DataFrames, CSV, PolyaGammaDistribution, AltDistributions 
 
@@ -65,5 +67,18 @@ function summary(results, burn=0)
  end
  return hcat(sets, means, stds, lens)
 end
+
+function runmod(niter::Int64, burnin::Int64=0, chains::Int64=4)
+      futureres, res = Dict(), Dict()
+      sendto([i for i in procs()[1:",chains,"]], dat=rdat)
+      for i in procs()
+       #@spawnat i global dat = rdat
+       push!(futureres,  i => @spawnat i gibbs(niter, burnin, dat));
+      end
+      for i in procs()
+        push!(res, i => fetch(futureres[i]))
+      end
+      return res
+    end
 
 end # module
