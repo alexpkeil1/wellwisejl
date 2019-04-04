@@ -72,12 +72,12 @@ function flat(arr::Array)
    mapreduce(x -> isa(x, Array) ? flat(x) : x, append!, arr,init=[])
 end
 
-function runmod(rdat::DataFrame, niter::NI, burnin=0, chains=4) where {NI<:Integer}
+function runmod(sampler::Function, rdat::DataFrame, niter::NI, burnin=0, chains=4) where {NI<:Integer}
   futureres, res = Dict(), Dict()
   sendto([i for i in procs()[1:chains]], dat=rdat)
   for i in procs()
     @spawnat i global dat = rdat
-    push!(futureres,  i => @spawnat i gibbs(niter, burnin, dat));
+    push!(futureres,  i => @spawnat i sampler(niter, burnin, dat));
   end
   for i in procs()
     push!(res, i => fetch(futureres[i]))
