@@ -3,6 +3,9 @@ module wellwisejl
 export sendto, addmoreprocs, ccdat, rbern, expit, summary, runmod
 
 using Distributed
+using DataFrames
+import DataFrames: completecases
+
 
 
 
