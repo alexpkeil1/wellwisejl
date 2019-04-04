@@ -6,17 +6,17 @@ using Distributed
 
 
 
-struct GibbsSampler{I <: Int64, B <: Int64, D <: DataFrame} <: DataFrame
-    iter::I
-    burnin::B
-    dat::D
-    @doc """
-    $(SIGNATURES)
-
-    """
-    function GibbsSampler(iter::I, burnin::B, dat::D) where {I <: Int64, B <: Int64, D <: DataFrame}
-    end
-end
+#struct GibbsSampler{I <: Int64, B <: Int64, D <: DataFrame} <: DataFrame
+#    iter::I
+#    burnin::B
+#    dat::D
+#    @doc """
+#    $(SIGNATURES)
+#
+#    """
+#    function GibbsSampler(iter::I, burnin::B, dat::D) where {I <: Int64, B <: Int64, D <: DataFrame}
+#    end
+#end
 
 
 function addmoreprocs()
