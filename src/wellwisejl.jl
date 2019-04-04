@@ -6,19 +6,15 @@ using Distributed
 
 
 
-struct StdCorrFactor{V <: AbstractVector, S <: CovarianceFactor, T} <: AbstractMatrix{T}
-    σ::V
-    F::S
+struct GibbsSampler{I <: Int64, B <: Int64, D <: DataFrame} <: DataFrame
+    iter::I
+    burnin::B
+    dat::D
     @doc """
     $(SIGNATURES)
 
-    A factor `L` of a covariance matrix `Σ = LL'` given as `L = Diagonal(σ) * F`. Can be
-    used in place of `L`, without performing the multiplication.
     """
-    function StdCorrFactor(σ::V, F::S) where {V <: AbstractVector, S <: CovarianceFactor}
-        T = typeof(one(eltype(F)) * one(eltype(σ)))
-        @argcheck conforming_μL(σ, F)
-        new{V,S,T}(σ, F)
+    function GibbsSampler(iter::I, burnin::B, dat::D) where {I <: Int64, B <: Int64, D <: DataFrame}
     end
 end
 
