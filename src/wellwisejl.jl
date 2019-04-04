@@ -37,7 +37,7 @@ function sendto(ps::Vector{Int}; args...)
   end
 end 
 
-function ccdat(data, i::{Int}=1)
+function ccdat(data, i::Int=1)
   cols = [:Arsenic, :Cadmium, :Lead, :Manganese, :Copper, :y];
   cc = completecases(data[:,cols]);
   dat = data[(cc .& (data[:iter] .== i)) ,cols];
@@ -84,7 +84,7 @@ function summary(results, burn=0)
 end
 
 
-function runmod(niter::Int64, burnin::Int64=0, chains::Int64=4)
+function runmod(niter::NI, burnin=0, chains=4) where {NI<:Integer}
   futureres, res = Dict(), Dict()
   sendto([i for i in procs()[1:chains]], dat=rdat)
   for i in procs()
