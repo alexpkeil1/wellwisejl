@@ -132,7 +132,7 @@ function traceplot(res::Dict{Any,Any}, pos::Integer)
       lines!(scene, Iteration, chain[2][:,pos], 
         color = cols[chain[1]],
         axis = (
-           names = (axisnames = ("Iteration", parname),)
+           names = (axisnames = ("Iteration", parname),),
            grid = (linewidth = (0, 0),),
            )
            )
@@ -151,7 +151,7 @@ function traceplot(res::Dict{Any,Any}, colnm::Symbol)
       lines!(scene, Iteration, chain[2][colnm], 
         color = cols[chain[1]],
         axis = (
-           names = (axisnames = ("Iteration", parname),)
+           names = (axisnames = ("Iteration", parname),),
            grid = (linewidth = (0, 0),),
            )
            )
