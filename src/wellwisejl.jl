@@ -1,10 +1,11 @@
 module wellwisejl
 
-export sendto, addmoreprocs, ccdat, rbern, expit, summary, runmod
+export sendto, addmoreprocs, ccdat, rbern, expit, summarygibbs, runmod
 
 using Distributed
 using DataFrames
 import DataFrames: completecases
+using Statistics
 
 
 
@@ -102,7 +103,7 @@ function summarygibbs(results::DataFrame)
  return res
 end
 
-function summarygibbs(results::Dict{Any,Any})
+function summarygibbs(results::Dict)
  sets, means, medians, pl, pu, stds, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[]
  nm = names(results)
  for i in 1:size(results, 2)
