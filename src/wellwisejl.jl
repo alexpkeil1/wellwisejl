@@ -60,7 +60,7 @@ function rbern(mu::Array{Float64,1})
 end 
 
 function expit(mu::Float64)
-  x::Float64  = 1/(1-exp(mu))
+  x::Float64  = 1/(1+exp(-mu))
 end 
 
 function expit(mu::Array{Float64,1})
