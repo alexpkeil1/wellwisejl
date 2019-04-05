@@ -122,14 +122,14 @@ function summarygibbs(results::Dict{Any,Any})
  return res
 end
 
-function traceplot(res::Dict{Any,Any}, pos::Integer)
-    Iteration = [i for i in 1:size(res[1], 1)]
+function traceplot(res::Dict{Any,Any}, pos::Integer, burnin::Integer)
+    Iteration = [i for i in 1:(size(res[1], 1) - burnin+1)]
     cols = [:black, :blue, :red, :green, :yellow]
     # make plot
     parname = string(names(res[1])[pos])
 	scene = Scene()
     for chain in res
-      lines!(scene, Iteration, chain[2][:,pos], 
+      lines!(scene, Iteration, chain[2][(burnin+1):end,pos], 
         color = cols[chain[1]],
         axis = (
            names = (axisnames = ("Iteration", parname),),
@@ -141,14 +141,14 @@ function traceplot(res::Dict{Any,Any}, pos::Integer)
 end
 
 
-function traceplot(res::Dict{Any,Any}, colnm::Symbol)
-    Iteration = [i for i in 1:size(res[1], 1)]
+function traceplot(res::Dict{Any,Any}, colnm::Symbol, burnin::Integer)
+    Iteration = [i for i in 1:(size(res[1], 1) - burnin+1)]
     cols = [:black, :blue, :red, :green, :yellow]
     # make plot
     parname = string(colnm)
 	scene = Scene()
     for chain in res
-      lines!(scene, Iteration, chain[2][colnm], 
+      lines!(scene, Iteration, chain[2][colnm][(burnin+1):end], 
         color = cols[chain[1]],
         axis = (
            names = (axisnames = ("Iteration", parname),),
@@ -158,16 +158,18 @@ function traceplot(res::Dict{Any,Any}, colnm::Symbol)
     end
     return scene
 end
+traceplot(res::Dict{Any,Any}, pos::Integer) = traceplot(res=res, pos=pos, burnin=0)
+traceplot(res::Dict{Any,Any}, colnm::Symbol) = traceplot(res=res, colnm=colnm, burnin=0)
 
 
-function densplot(res::Dict{Any,Any}, pos::Integer)
-    Iteration = [i for i in 1:size(res[1], 1)]
+function densplot(res::Dict{Any,Any}, pos::Integer, burnin::Integer)
+    Iteration = [i for i in 1:(size(res[1], 1) - burnin+1)]
     cols = [:black, :blue, :red, :green, :yellow]
     # make plot
     parname = string(names(res[1])[pos])
 	scene = Scene()
     for chain in res
-      vals = chain[2][:,pos]
+      vals = chain[2][(burnin+1):end,pos]
       rng = (minimum(vals), maximum(vals))
       x = range(rng[1], stop=rng[2], length=101)
       kdens = kde(vals)
@@ -183,14 +185,14 @@ function densplot(res::Dict{Any,Any}, pos::Integer)
     return scene
 end
 
-function densplot(res::Dict{Any,Any}, colnm::Symbol)
+function densplot(res::Dict{Any,Any}, colnm::Symbol, burnin::Integer)
     Iteration = [i for i in 1:size(res[1], 1)]
     cols = [:black, :blue, :red, :green, :yellow]
     # make plot
     parname = string(colnm)
 	scene = Scene()
     for chain in res
-      vals = chain[2][colnm]
+      vals = chain[2][colnm][(burnin+1):end]
       rng = (minimum(vals), maximum(vals))
       x = range(rng[1], stop=rng[2], length=101)
       kdens = kde(vals)
@@ -205,6 +207,8 @@ function densplot(res::Dict{Any,Any}, colnm::Symbol)
     end
     return scene
 end
+densplot(res::Dict{Any,Any}, pos::Integer) = densplot(res=res, pos=pos, burnin=0)
+densplot(res::Dict{Any,Any}, colnm::Symbol) = densplot(res=res, colnm=colnm, burnin=0)
 
 
 end # module
