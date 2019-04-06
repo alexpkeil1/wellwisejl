@@ -78,11 +78,11 @@ end
 function runmod(sampler::Function, rdat::DataFrame, niter::NI, burnin=0, chains=4) where {NI<:Integer}
   futureres, res = Dict(), Dict()
   sendto([i for i in procs()[1:chains]], dat=rdat)
-  for i in procs()
+  for i in procs()[1:chains]
     @spawnat i global dat = rdat
     push!(futureres,  i => @spawnat i sampler(niter, burnin, dat));
   end
-  for i in procs()
+  for i in procs()[1:chains]
     push!(res, i => fetch(futureres[i]))
   end
   return res
