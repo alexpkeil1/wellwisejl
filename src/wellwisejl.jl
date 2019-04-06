@@ -123,7 +123,7 @@ function summarygibbs(results::Dict{Any,Any})
 end
 
 function traceplot(res::Dict{Any,Any}, pos::Integer, burnin::Integer)
-    Iteration = [i for i in 1:(size(res[1], 1) - burnin+1)]
+    Iteration = [burnin + i for i in 1:(size(res[1], 1)-burnin)]
     cols = [:black, :blue, :red, :green, :yellow]
     # make plot
     parname = string(names(res[1])[pos])
@@ -142,7 +142,7 @@ end
 
 
 function traceplot(res::Dict{Any,Any}, colnm::Symbol, burnin::Integer)
-    Iteration = [i for i in 1:(size(res[1], 1) - burnin+1)]
+    Iteration = [burnin + i for i in 1:(size(res[1], 1)-burnin)]
     cols = [:black, :blue, :red, :green, :yellow]
     # make plot
     parname = string(colnm)
@@ -163,7 +163,7 @@ traceplot(res::Dict{Any,Any}, colnm::Symbol) = traceplot(res, colnm, 0)
 
 
 function densplot(res::Dict{Any,Any}, pos::Integer, burnin::Integer)
-    Iteration = [i for i in 1:(size(res[1], 1) - burnin+1)]
+    Iteration = [burnin + i for i in 1:(size(res[1], 1)-burnin)]
     cols = [:black, :blue, :red, :green, :yellow]
     # make plot
     parname = string(names(res[1])[pos])
@@ -186,7 +186,7 @@ function densplot(res::Dict{Any,Any}, pos::Integer, burnin::Integer)
 end
 
 function densplot(res::Dict{Any,Any}, colnm::Symbol, burnin::Integer)
-    Iteration = [i for i in 1:size(res[1], 1)]
+    Iteration = [burnin + i for i in 1:(size(res[1], 1)-burnin)]
     cols = [:black, :blue, :red, :green, :yellow]
     # make plot
     parname = string(colnm)
