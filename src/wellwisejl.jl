@@ -158,8 +158,8 @@ function traceplot(res::Dict{Any,Any}, colnm::Symbol, burnin::Integer)
     end
     return scene
 end
-traceplot(res::Dict{Any,Any}, pos::Integer) = traceplot(res=res, pos=pos, burnin=0)
-traceplot(res::Dict{Any,Any}, colnm::Symbol) = traceplot(res=res, colnm=colnm, burnin=0)
+traceplot(res::Dict{Any,Any}, pos::Integer) = traceplot(res, pos, 0)
+traceplot(res::Dict{Any,Any}, colnm::Symbol) = traceplot(res, colnm, 0)
 
 
 function densplot(res::Dict{Any,Any}, pos::Integer, burnin::Integer)
@@ -207,8 +207,8 @@ function densplot(res::Dict{Any,Any}, colnm::Symbol, burnin::Integer)
     end
     return scene
 end
-densplot(res::Dict{Any,Any}, pos::Integer) = densplot(res=res, pos=pos, burnin=0)
-densplot(res::Dict{Any,Any}, colnm::Symbol) = densplot(res=res, colnm=colnm, burnin=0)
+densplot(res::Dict{Any,Any}, pos::Integer) = densplot(res, pos, 0)
+densplot(res::Dict{Any,Any}, colnm::Symbol) = densplot(res, colnm, 0)
 
 
 end # module
