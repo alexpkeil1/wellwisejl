@@ -25,9 +25,9 @@ using KernelDensity, Interpolations
 #end
 
 
-function addmoreprocs()
-  if(nprocs()<2) # need to run this before anything!
-    addprocs(2-nprocs())
+function addmoreprocs(chains::Int=2)
+  if(nprocs()<chains) # need to run this before anything!
+    addprocs(chains-nprocs())
   end
 end 
 
