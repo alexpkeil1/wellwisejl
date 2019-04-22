@@ -1,10 +1,9 @@
 name = "wellwisejl"
 uuid = "42732c24-567c-11e9-365b-5b3eda1e810d"
 authors = ["Alex Keil <alex.keil@gmail.com>"]
-version = "0.1.5"
+version = "0.1.6"
 
 [deps]
-AltDistributions = "875e7ca2-ab9d-5828-93ae-a098eac53262"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
