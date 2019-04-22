@@ -14,17 +14,17 @@ version = "0.9.7"
 
 [[AltDistributions]]
 deps = ["ArgCheck", "Distributions", "DocStringExtensions", "ForwardDiff", "LinearAlgebra", "Parameters", "Random", "SpecialFunctions", "StatsFuns"]
-git-tree-sha1 = "f0b8f88f93bd32a3c5c86caae0e2cafc33d6c0dd"
+git-tree-sha1 = "35b43735bfb567134085b8bcb9cec5b396076610"
 repo-rev = "master"
 repo-url = "https://github.com/alexpkeil1/AltDistributions.jl.git"
 uuid = "875e7ca2-ab9d-5828-93ae-a098eac53262"
-version = "0.1.0"
+version = "0.1.1"
 
 [[ArgCheck]]
-deps = ["Random", "Test"]
-git-tree-sha1 = "9e3bff61bc46d3420d903b53ad07f85325fddc28"
+deps = ["Random"]
+git-tree-sha1 = "dab25d711a1dedb707a55dbc1eb9fd578f76ff32"
 uuid = "dce04be8-c92d-5529-be00-80e4d2c0e197"
-version = "1.0.0"
+version = "1.0.1"
 
 [[Arpack]]
 deps = ["BinaryProvider", "Libdl", "LinearAlgebra", "Random", "SparseArrays", "Test"]
