@@ -109,7 +109,7 @@ end
 
 function summarygibbs(results::Dict{Any,Any})
  sets, means, medians, pl, pu, stds, ac1, ac5, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[]
- nm = names(results)
+ nm = names(results[1])
  for i in 1:size(results[1], 2)
    col = flat([vcat(r[2][:,i]) for r in results])
    means = vcat(means, mean(col))
