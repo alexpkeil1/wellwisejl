@@ -6,6 +6,7 @@ using Distributed
 using DataFrames
 import DataFrames: completecases
 using Statistics
+using StatsBase
 
 
 
