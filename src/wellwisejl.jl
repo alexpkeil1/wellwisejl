@@ -87,7 +87,7 @@ function runmod(sampler::Function, rdat::DataFrame, niter::NI, burnin=0, chains=
 end
 
 function summarygibbs(results::DataFrame)
- sets, means, medians, pl, pu, stds, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[]
+ sets, means, medians, pl, pu, stds, ac1, ac5, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[]
  nm = names(results)
  for i in 1:size(results, 2)
    col = results[:,i]
@@ -96,16 +96,19 @@ function summarygibbs(results::DataFrame)
    pl = vcat(pl, quantile(col, 0.025)[1])
    pu = vcat(pu, quantile(col,  0.975)[1])
    stds = vcat(stds, std(col))
+   ac = autocor(col, [1,5])
+   ac1 = vcat(ac1, ac[1])
+   ac5 = vcat(ac5, ac[2])
    lens = vcat(lens, length(col))
  end
- res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, lens))
- names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :length])
+ res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ac1, ac5, lens))
+ names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :autocor_1, :autocor_5, :length])
  return res
 end
 
 function summarygibbs(results::Dict{Any,Any})
- sets, means, medians, pl, pu, stds, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[]
- nm = names(results[1])
+ sets, means, medians, pl, pu, stds, ac1, ac5, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[]
+ nm = names(results)
  for i in 1:size(results[1], 2)
    col = flat([vcat(r[2][:,i]) for r in results])
    means = vcat(means, mean(col))
@@ -113,11 +116,21 @@ function summarygibbs(results::Dict{Any,Any})
    pl = vcat(pl, quantile(col, 0.025)[1])
    pu = vcat(pu, quantile(col,  0.975)[1])
    stds = vcat(stds, std(col))
+   ac = autocor(col, [1,5])
+   ac1 = vcat(ac1, ac[1])
+   ac5 = vcat(ac5, ac[2])
    lens = vcat(lens, length(col))
  end
- res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, lens))
- names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :length])
+ res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ac1, ac5, lens))
+ names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :autocor_1, :autocor_5, :length])
  return res
 end
+
+
+##########
+# dpp related functions
+##########
+
+
 
 end # module
