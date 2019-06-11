@@ -7,6 +7,7 @@ using DataFrames
 import DataFrames: completecases
 using Statistics
 using StatsBase
+using MCMCDiagnostics
 
 
 
@@ -88,7 +89,7 @@ function runmod(sampler::Function, rdat::DataFrame, niter::NI, burnin=0, chains=
 end
 
 function summarygibbs(results::DataFrame)
- sets, means, medians, pl, pu, stds, ac1, ac5, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[]
+ sets, means, medians, pl, pu, stds, ac1, ac5, ess, rhat, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[]
  nm = names(results)
  for i in 1:size(results, 2)
    col = results[:,i]
@@ -100,15 +101,17 @@ function summarygibbs(results::DataFrame)
    ac = autocor(col, [1,5])
    ac1 = vcat(ac1, ac[1])
    ac5 = vcat(ac5, ac[2])
+   ess = effective_sample_size(col)
+   rhat = potential_scale_reduction(col)
    lens = vcat(lens, length(col))
  end
- res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ac1, ac5, lens))
- names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :autocor_1, :autocor_5, :length])
+ res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ess, rhat, ac1, ac5, lens))
+ names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :ess, :rhat, :autocor_1, :autocor_5, :length])
  return res
 end
 
 function summarygibbs(results::Dict{Any,Any})
- sets, means, medians, pl, pu, stds, ac1, ac5, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[]
+ sets, means, medians, pl, pu, stds, ac1, ac5, ess, rhat, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[]
  nm = names(results[1])
  for i in 1:size(results[1], 2)
    col = flat([vcat(r[2][:,i]) for r in results])
@@ -120,10 +123,12 @@ function summarygibbs(results::Dict{Any,Any})
    ac = autocor(col, [1,5])
    ac1 = vcat(ac1, ac[1])
    ac5 = vcat(ac5, ac[2])
+   ess = effective_sample_size(col)
+   rhat = potential_scale_reduction(col)
    lens = vcat(lens, length(col))
  end
- res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ac1, ac5, lens))
- names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :autocor_1, :autocor_5, :length])
+ res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ess, rhat, ac1, ac5, lens))
+ names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :ess, :rhat, :autocor_1, :autocor_5, :length])
  return res
 end
 
