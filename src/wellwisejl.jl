@@ -72,7 +72,8 @@ function expit(mu::Array{Union{Missing, Float64},1})
 end 
 
 function flat(arr::Array)
-   mapreduce(x -> isa(x, Array) ? flat(x) : x, append!, arr,init=[])
+   res = mapreduce(x -> isa(x, Array) ? flat(x) : x, append!, arr,init=[])
+   convert(Array{Float64}, res)
 end
 
 function runmod(sampler::Function, rdat::DataFrame, niter::NI, burnin=0, chains=4) where {NI<:Integer}
