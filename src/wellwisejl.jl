@@ -89,7 +89,7 @@ function runmod(sampler::Function, rdat::DataFrame, niter::NI, burnin=0, chains=
 end
 
 function summarygibbs(results::DataFrame)
- sets, means, medians, pl, pu, stds, ac1, ac5, ess, rhat, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[]
+ sets, means, medians, pl, pu, stds, ac1, ac5, ess, lens = Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[], Array[]
  nm = names(results)
  for i in 1:size(results, 2)
    col = results[:,i]
@@ -102,11 +102,10 @@ function summarygibbs(results::DataFrame)
    ac1 = vcat(ac1, ac[1])
    ac5 = vcat(ac5, ac[2])
    ess = vcat(ess, effective_sample_size(col))
-   rhat = vcat(rhat, potential_scale_reduction(col))
    lens = vcat(lens, length(col))
  end
- res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ess, rhat, ac1, ac5, lens))
- names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :ess, :rhat, :autocor_1, :autocor_5, :length])
+ res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ess, ac1, ac5, lens))
+ names!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :ess, :autocor_1, :autocor_5, :length])
  return res
 end
 
@@ -124,7 +123,7 @@ function summarygibbs(results::Dict{Any,Any})
    ac1 = vcat(ac1, ac[1])
    ac5 = vcat(ac5, ac[2])
    ess = vcat(ess, effective_sample_size(col))
-   rhat = vcat(rhat, potential_scale_reduction(col))
+   rhat = vcat(rhat,  potential_scale_reduction([vcat(r[2][:,i]) for r in results]...))
    lens = vcat(lens, length(col))
  end
  res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ess, rhat, ac1, ac5, lens))
