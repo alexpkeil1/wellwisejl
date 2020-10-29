@@ -106,7 +106,10 @@ function summarygibbs(results::DataFrame)
    lens = vcat(lens, length(col))
  end
  res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ess, ac1, ac5, lens))
- rename!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :ess, :autocor_1, :autocor_5, :length])
+ exnm = names(res)
+ nms =  [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :ess, :autocor_1, :autocor_5, :length]
+ renamer = Dict([exnm[i] => nms[i] for i in 1:length(exnm)])
+ rename!(res, renamer)
  return res
 end
 
@@ -128,7 +131,11 @@ function summarygibbs(results::Dict{Any,Any})
    lens = vcat(lens, length(col))
  end
  res = convert(DataFrame, hcat(nm, means, stds, medians, pl, pu, ess, rhat, ac1, ac5, lens))
- rename!(res, [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :ess, :rhat, :autocor_1, :autocor_5, :length])
+ rename!(res, )
+ exnm = names(res)
+ nms =  [:nm, :mean, :std, :median, :lower2_5, :upper97_5, :ess, :rhat, :autocor_1, :autocor_5, :length]
+ renamer = Dict([exnm[i] => nms[i] for i in 1:length(exnm)])
+ rename!(res, renamer)
  return res
 end
 
