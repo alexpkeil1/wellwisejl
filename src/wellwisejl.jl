@@ -7,7 +7,7 @@ using DataFrames
 import DataFrames: completecases
 using Statistics
 using StatsBase
-using MCMCDiagnostics
+using MCMCDiagnosticTools
 
 
 
